@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ with .Title }}{{ . }}{{ end }}</title>
+    <link rel="stylesheet" href="{{ (printf "/%s%s" "static/" "style.css") }}">
+  </head>
+  <body>
+    {{- block "header" . }}<header></header>{{- end }}
+    <main>
+      {{- block "main" . }}{{- end }}
+    </main>
+  </body>
+</html>
