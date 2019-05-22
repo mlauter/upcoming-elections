@@ -1,22 +1,26 @@
+GOCMD=go
+
 all: build
 
 deps:
-	$(prefix)/bin/go get -u golang.org/x/lint/golint
-	$(prefix)/bin/go get honnef.co/go/tools/cmd/megacheck
-	$(prefix)/bin/go get github.com/gorilla/mux
-	$(prefix)/bin/go get github.com/gorilla/handlers
+	$(GOCMD) get -u golang.org/x/lint/golint
+	$(GOCMD) get honnef.co/go/tools/cmd/megacheck
+	$(GOCMD) get github.com/gorilla/mux
+	$(GOCMD) get github.com/gorilla/handlers
+	$(GOCMD) get github.com/gorilla/schema
+	$(GOCMD) get github.com/gorilla/csrf
 
 lint: deps
-	$(prefix)/bin/go fmt
-	$(prefix)/bin/go vet
+	$(GOCMD) fmt
+	$(GOCMD) vet
 	$(GOPATH)/bin/golint -set_exit_status
 	$(GOPATH)/bin/megacheck -unused.exit-non-zero -staticcheck.exit-non-zero
 
 test: lint
-	$(prefix)/bin/go test
+	$(GOCMD) test
 
 build: clean test
-	$(prefix)/bin/go build -o elections
+	$(GOCMD) build -o elections
 
 clean:
 	@rm -f elections

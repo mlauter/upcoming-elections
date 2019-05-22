@@ -2,6 +2,7 @@
 <div class="address-form">
   <h1>Find my next election</h1>
   <form method="post" action="/search">
+    {{ .csrfField }}
     <p>Enter the address where you are registered to vote.</p>
     <div>
       <label for="street-field">Street: </label>
