@@ -53,6 +53,7 @@ func AddressFromPostForm(d url.Values) (*Address, error) {
 		}
 	}
 
+	decoder.IgnoreUnknownKeys(true)
 	if err := decoder.Decode(&addr, d); err != nil {
 		return nil, err
 	}

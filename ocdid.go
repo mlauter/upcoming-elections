@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -32,21 +34,37 @@ func NewTurboVoteClient() *TurboVoteClient {
 	}
 }
 
-// UpcomingElectionsData represents the response from the turbovote upcoming elections endpoint
-type UpcomingElectionsData struct {
-}
-
 // GetUpcomingElections gets upcoming elections for given address from the turbovote api
 func (tc *TurboVoteClient) GetUpcomingElections(a *Address) (*UpcomingElectionsData, error) {
 	ocdids := makeOCDIDs(a)
 	url := fmt.Sprintf("%s/elections/upcoming?district-divisions=%s", tc.baseURL, strings.Join(ocdids, ","))
 
-	_, err := http.NewRequest(http.MethodGet, url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	return nil, nil
+	// add json header
+	req.Header.Add("Accept", "application/json")
+
+	// make the request
+	res, getErr := tc.httpClient.Do(req)
+	if getErr != nil {
+		return nil, getErr
+	}
+
+	body, readErr := ioutil.ReadAll(res.Body)
+	if readErr != nil {
+		return nil, readErr
+	}
+
+	elections := UpcomingElectionsData{}
+	jsonErr := json.Unmarshal(body, &elections)
+	if err != nil {
+		return nil, jsonErr
+	}
+
+	return &elections, nil
 }
 
 func makeOCDIDs(a *Address) []string {
@@ -60,7 +78,7 @@ func makeOCDIDs(a *Address) []string {
 	// city has only been validated to be a string, add path escaping to avoid malicious input
 	// e.g. city = Cleveland/evil/path...
 	city := re.ReplaceAllString(strings.ToLower(a.City), "_")
-	cityID := fmt.Sprintf("%s/place:", url.PathEscape(city))
+	cityID := fmt.Sprintf("%s/place:%s", stateID, url.PathEscape(city))
 
 	return append(ids, stateID, cityID)
 }

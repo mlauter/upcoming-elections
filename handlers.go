@@ -32,8 +32,8 @@ func addressHandler(w http.ResponseWriter, r *http.Request) *appError {
 	buf := &bytes.Buffer{}
 
 	err := parseTemplate("index.html").Execute(buf, map[string]interface{}{
-		"title":          "Elections",
-		"states":         states,
+		"Title":          "Elections",
+		"States":         states,
 		csrf.TemplateTag: csrf.TemplateField(r),
 	})
 
@@ -67,8 +67,15 @@ func searchHandler(w http.ResponseWriter, r *http.Request) *appError {
 		}
 	}
 
-	NewTurboVoteClient().GetUpcomingElections(addr)
+	res, clientErr := NewTurboVoteClient().GetUpcomingElections(addr)
+	if clientErr != nil {
+		return &appError{
+			Error:   clientErr,
+			Message: "Sorry, we were unable to lookup upcoming elections for your address at this time. Please try again.",
+			Code:    502,
+		}
+	}
 
-	fmt.Printf("%#v\n", addr)
+	fmt.Printf("%#v\n", res)
 	return nil
 }
