@@ -9,7 +9,9 @@ import (
 	"time"
 )
 
-// Represents a response from the turbovote upcoming elections api
+//lint:file-ignore U1000 Ignore unused field, struct is generated from API response
+
+// UpcomingElectionsData Represents a response from the turbovote upcoming elections api
 type UpcomingElectionsData []struct {
 	DistrictDivisions []struct {
 		OcdID                           string `json:"ocd-id"`

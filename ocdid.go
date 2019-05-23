@@ -60,7 +60,7 @@ func (tc *TurboVoteClient) GetUpcomingElections(a *Address) (*UpcomingElectionsD
 
 	elections := UpcomingElectionsData{}
 	jsonErr := json.Unmarshal(body, &elections)
-	if err != nil {
+	if jsonErr != nil {
 		return nil, jsonErr
 	}
 

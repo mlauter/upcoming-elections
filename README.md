@@ -9,6 +9,13 @@ This is a [go](https://golang.org/) implementation of the Democracy works upcomi
 
 Building this package requires the go toolchain. Follow these [instructions](https://golang.org/doc/install#install) to install go on your system. (Just in case, I've also included the compiled elections binary for OSX, which should allow you to run the elections app on a mac without rebuilding.)
 
+Go is a bit specific about directory structure.
+
+```
+mkdir -p ${GOPATH}/src/github.com/mlauter
+cp -r /path/to/unzipped/dir ${GOPATH}/src/github.com/mlauter
+``` 
+
 ### Build
 
 From inside the unzipped directory, first run:
