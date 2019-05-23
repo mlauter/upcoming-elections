@@ -5,7 +5,7 @@
   <h1>Found {{ $num }} upcoming election{{ if (ne $num 1) }}s{{ end }} in your area</h1>
   <ul>
     {{ range .Elections }}
-    <li><b>{{ datef .Date }}</b> - <a target="_blank" href="{{ .Website }}">{{ .Description }}</a>.
+    <li><b>{{ datef .Date }}</b> - {{ if (ne .Website "") }}<a target="_blank" href="{{ .Website }}">{{ .Description }}</a>{{ else }}{{ .Description }}{{ end }}.
       {{ range .DistrictDivisions }}
         {{ range .VoterRegistrationMethods }}
           {{ if (eq .Type "by-mail") }}

@@ -3,7 +3,7 @@
 
 # Overview
 
-This is a [go](https://golang.org/) implementation of the Democracy works upcoming elections practical excercise. Along with go standard library packages, it uses the [gorilla](https://www.gorillatoolkit.org/) web toolkit for routing, csrf tokens, and converting form data to go structs.
+This is a [go](https://golang.org/) implementation of the Democracy works upcoming elections practical exercise. Along with go standard library packages, it uses the [gorilla](https://www.gorillatoolkit.org/) web toolkit for routing, csrf tokens, and converting form data to go structs.
 
 ## Running
 
