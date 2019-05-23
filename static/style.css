@@ -41,3 +41,7 @@ input:focus {
 button {
   margin-left: .5em;
 }
+
+div.election-list {
+    margin: 2em;
+}

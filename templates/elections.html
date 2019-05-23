@@ -1,0 +1,22 @@
+{{ define "main" }}
+<div class="election-list">
+  <nav><a href="/">Home</a></nav>
+  {{ $num := len .Elections}}
+  <h1>Found {{ $num }} upcoming election{{ if (ne $num 1) }}s{{ end }} in your area</h1>
+  <ul>
+    {{ range .Elections }}
+    <li><b>{{ datef .Date }}</b> - <a target="_blank" href="{{ .Website }}">{{ .Description }}</a>.
+      {{ range .DistrictDivisions }}
+        {{ range .VoterRegistrationMethods }}
+          {{ if (eq .Type "by-mail") }}
+          The deadline for registering by mail is {{ datef .DeadlinePostmarked }}.
+          {{ else if (eq .Type "online") }}
+          The deadline for registering online is {{ datef .DeadlineOnline }}.
+          {{ end }}
+        {{ end }}
+      {{ end }}
+    </li>
+    {{ end }}
+  </ul>
+</div>
+{{ end }}

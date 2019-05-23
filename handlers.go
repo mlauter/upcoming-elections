@@ -76,6 +76,21 @@ func searchHandler(w http.ResponseWriter, r *http.Request) *appError {
 		}
 	}
 
-	fmt.Printf("%#v\n", res)
+	buf := &bytes.Buffer{}
+
+	parseErr := parseTemplate("elections.html").Execute(buf, map[string]interface{}{
+		"Title":     "Elections",
+		"Elections": res,
+	})
+
+	if parseErr != nil {
+		return &appError{
+			Error:   parseErr,
+			Message: "Something went wrong",
+			Code:    500,
+		}
+	}
+
+	buf.WriteTo(w)
 	return nil
 }
