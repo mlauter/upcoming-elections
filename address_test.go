@@ -33,7 +33,7 @@ func TestAddressFromPostForm(t *testing.T) {
 				"street-2": []string{"Apt 3R"},
 				"city":     []string{"Los Angeles"},
 				"state":    []string{"CA"},
-				"zip":      []string{"90210"},
+				"zip":      []string{"90210-1234"},
 			},
 			&Address{
 				FirstLine:  "123 4th St",
