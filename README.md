@@ -13,6 +13,8 @@ Building this package requires the go toolchain. Follow these [instructions](htt
 ### Build
 
 ```
+git clone https://github.com/mlauter/upcoming-elections.git
+cd upcoming-elections
 make
 ```
 This will fetch the necessary dependencies and compile the elections binary.
