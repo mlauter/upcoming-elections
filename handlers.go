@@ -67,7 +67,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) *appError {
 		}
 	}
 
-	res, clientErr := NewTurboVoteClient().GetUpcomingElections(addr)
+	res, clientErr := NewTurboVoteClient().GetUpcomingElections(addr, &CivicInfoClient{})
 	if clientErr != nil {
 		return &appError{
 			Error:   clientErr,
@@ -78,14 +78,14 @@ func searchHandler(w http.ResponseWriter, r *http.Request) *appError {
 
 	buf := &bytes.Buffer{}
 
-	parseErr := parseTemplate("elections.html").Execute(buf, map[string]interface{}{
+	tplErr := parseTemplate("elections.html").Execute(buf, map[string]interface{}{
 		"Title":     "Elections",
 		"Elections": res,
 	})
 
-	if parseErr != nil {
+	if tplErr != nil {
 		return &appError{
-			Error:   parseErr,
+			Error:   tplErr,
 			Message: "Something went wrong",
 			Code:    500,
 		}

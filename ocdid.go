@@ -1,12 +1,13 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"google.golang.org/api/civicinfo/v2"
+	"google.golang.org/api/option"
 	"io/ioutil"
 	"net/http"
-	"net/url"
-	"regexp"
 	"strings"
 	"time"
 )
@@ -15,9 +16,11 @@ const (
 	turboVoteBaseURL = "https://api.turbovote.org"
 )
 
+// todo make configurable
 var (
 	turboVoteTimeout = 5 * time.Second
-	re               = regexp.MustCompile(`\s+`)
+
+	_ OCDIDGetter = (*CivicInfoClient)(nil) // ensure civic info client fulfills the interface
 )
 
 // TurboVoteClient turbovote api client
@@ -26,7 +29,7 @@ type TurboVoteClient struct {
 	httpClient *http.Client
 }
 
-// NewTurboVoteClient creates a new, initialized turboVoteClient
+// NewTurboVoteClient creates a new, initialized TurboVoteClient
 func NewTurboVoteClient() *TurboVoteClient {
 	return &TurboVoteClient{
 		baseURL:    turboVoteBaseURL,
@@ -35,8 +38,8 @@ func NewTurboVoteClient() *TurboVoteClient {
 }
 
 // GetUpcomingElections gets upcoming elections for given address from the turbovote api
-func (tc *TurboVoteClient) GetUpcomingElections(a *Address) (*UpcomingElectionsData, error) {
-	ocdids := makeOCDIDs(a)
+func (tc *TurboVoteClient) GetUpcomingElections(a *Address, o OCDIDGetter) (*UpcomingElectionsData, error) {
+	ocdids, _ := o.GetOCDIDs(a)
 	url := fmt.Sprintf("%s/elections/upcoming?district-divisions=%s", tc.baseURL, strings.Join(ocdids, ","))
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
@@ -67,18 +70,33 @@ func (tc *TurboVoteClient) GetUpcomingElections(a *Address) (*UpcomingElectionsD
 	return &elections, nil
 }
 
-func makeOCDIDs(a *Address) []string {
+// OCDIDGetter wrapper around google civic info service for fetching ocdids
+type OCDIDGetter interface {
+	GetOCDIDs(a *Address) ([]string, error)
+}
+
+// CivicInfoClient receiver for GetOCDID method
+type CivicInfoClient struct {
+}
+
+// GetOCDIDs gets ocdids for a given address from the google civic info api
+func (c *CivicInfoClient) GetOCDIDs(a *Address) ([]string, error) {
 	var ids []string
+	addrString := a.ToString()
 
-	// state only ocdid
-	// state input has been validated against our list of states
-	stateID := fmt.Sprintf("ocd-division/country:us/state:%s", strings.ToLower(string(a.State)))
+	ctx := context.Background()
+	civicinfoService, err := civicinfo.NewService(ctx, option.WithAPIKey(civicDataAPIKey))
+	if err != nil {
+		return ids, err
+	}
 
-	// city ocdid
-	// city has only been validated to be a string, add path escaping to avoid malicious input
-	// e.g. city = Cleveland/evil/path...
-	city := re.ReplaceAllString(strings.ToLower(a.City), "_")
-	cityID := fmt.Sprintf("%s/place:%s", stateID, url.PathEscape(city))
+	req := &civicinfo.RepresentativeInfoRequest{}
+	call := civicinfoService.Representatives.RepresentativeInfoByAddress(req)
+	res, _ := call.Address(addrString).Context(ctx).Do()
 
-	return append(ids, stateID, cityID)
+	for k := range res.Divisions {
+		ids = append(ids, k)
+	}
+
+	return ids, nil
 }

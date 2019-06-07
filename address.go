@@ -19,6 +19,11 @@ type Address struct {
 	Zip        zip    `schema:"zip,required"`
 }
 
+// ToString comment
+func (a *Address) ToString() string {
+	return fmt.Sprintf("%s %s %s %s %s", a.FirstLine, a.SecondLine, a.City, a.State, a.Zip)
+}
+
 // State - a US state
 // might be useful at some point to have a more generic Field with Validation
 type state string

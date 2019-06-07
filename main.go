@@ -22,6 +22,8 @@ var (
 	readTimeout  = flag.Duration("read_timeout", 5*time.Second, "read timeout")
 	writeTimeout = flag.Duration("write_timeout", 30*time.Second, "write timeout")
 
+	civicDataAPIKey = os.Getenv("CIVIC_DATA_API_KEY")
+
 	decoder = schema.NewDecoder()
 )
 

@@ -9,6 +9,8 @@ deps:
 	$(GOCMD) get github.com/gorilla/handlers
 	$(GOCMD) get github.com/gorilla/schema
 	$(GOCMD) get github.com/gorilla/csrf
+	$(GOCMD) get google.golang.org/api/civicinfo/v2
+	$(GOCMD) get google.golang.org/api/option
 
 lint: deps
 	$(GOCMD) fmt
