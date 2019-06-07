@@ -13,7 +13,7 @@ Building this package requires the go toolchain. Follow these [instructions](htt
 ### Build
 
 ```
-git clone https://github.com/mlauter/upcoming-elections.git
+go get github.com/mlauter/upcoming-elections.git
 cd upcoming-elections
 make
 ```
