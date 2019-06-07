@@ -4,7 +4,7 @@
 
 Search for upcoming elections in your area by address.
 
-Along with go standard library packages, Upcoming Elections uses the [gorilla](https://www.gorillatoolkit.org/) web toolkit for routing, csrf tokens, and converting form data to go structs.
+Along with go standard library packages, Upcoming Elections uses the [gorilla](https://www.gorillatoolkit.org/) web toolkit for routing, csrf tokens, and converting form data to go structs. Uses the Google civic info api and the Democracy Works turbovote api.
 
 ## Running
 
